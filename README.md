@@ -1,34 +1,52 @@
-# Cornershop Product Data Fetcher
+# Cornershop API Data Extraction Tool
 
-This script fetches product data from the Cornershop API and exports the results to a specified file format (csv, parquet or json).
+This Python script is designed to fetch product data from the Cornershop API and save it in a JSON file. It retrieves product data based on a user-specified product name, postal code, and country code.
 
-## Requirements
+## Dependencies
 
-- Python 3.7 or later
-- pandas
+The script relies on these Python libraries:
+
 - requests
-- os, argparse, json, logging, datetime modules (standard in Python 3)
+- logging
+- datetime
+- typing
+- json
+- os
+
+## Features
+
+- Extracts product data from the Cornershop API
+- Transforms the fetched data into a format suitable for a DataFrame
+- Saves the transformed data as a JSON file in the specified directory
 
 ## Usage
 
-1. Clone this repository to your local machine.
-2. Install the required libraries by running `pip install pandas requests` in your terminal.
-3. Run the script from the command line by specifying the necessary arguments:
+Before running the script, replace the `term`, `code`, and `country` variables with your desired product name, postal code, and country code, respectively. 
 
-```bash
-python cornershop_product_data_fetcher.py --query "query" --cep "cep" --country "country_code" --dir_path "directory_path" --base_name "base_name" --format "file_format"
+You also need to set base_dir to your desired directory path where the JSON file should be saved.
+
+```python
+term = 'sabonete'  # replace with your product name
+code = 88010560  # replace with your postal code
+country = 'BR'  # replace with your country code
+base_dir = r'C:\Users\User\Your Directory'
 ```
 
-Here, replace "query" with your product search term, "cep" with your postal code, "country_code" with your country code (like "US", "BR", etc.), "directory_path" with the path where you want to save the file, "base_name" with the base name for the output file, and "file_format" with the file format ("csv", "parquet" or "json").
+Then run the script. It will fetch data from the Cornershop API, transform it, and save it in the specified directory as a JSON file named {term}_{code}_{current_timestamp}.json.
 
-For example, you might run something like this:
+## Main Functions
 
-```bash
-python cornershop_product_data_fetcher.py --query "apple" --cep 12345 --country "US" --dir_path "./data" --base_name "products" --format "csv"
-```
-This will search for "apple" in the Cornershop database, and save the resulting data in the file named something like products_20230705-103000.csv in the ./data directory.
+The script includes these main functions:
+#### `get_product_data(query: str, cep: int, country: str) -> dict`
 
+Fetches product data from the Cornershop API based on the provided product name, postal code, and country code, and returns a dictionary containing the search results.
 
-Remember to replace `cornershop_product_data_fetcher.py` with the actual filename of your script. This README assumes that all the provided code is placed in one Python file.
+#### `create_data(results: List[Dict])`
+Takes a list of dictionaries, which are the search results from get_product_data, and transforms it into a list of dictionaries ready for a DataFrame.
 
-You might want to add more information about the data returned from the Cornershop API and stored in the exported file, instructions for how to interpret it, and other relevant information for users of your script.
+#### `get_and_create(term, code, country, base_dir)`
+This is the main function that calls get_product_data, transforms the fetched data using create_data, and saves the transformed data as a JSON file in the specified directory. It also prints out messages during the process to inform the user of the current status.
+
+## Contribution
+
+Contributions are welcome. Please ensure that your code adheres to Python's best practices.
