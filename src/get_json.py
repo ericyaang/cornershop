@@ -141,11 +141,11 @@ def get_and_create(term, code, country, base_dir):
 
 
 if __name__ == "__main__":
+    from listas import supermercado
+    
     base_dir = os.getenv("CS_DIRECTORY")
     code = os.getenv("CS_CODE")
     country = os.getenv("CS_COUNTRY")
-
-    from listas import supermercado
 
     for categoria in supermercado:
         for item in categoria:
