@@ -130,7 +130,13 @@ def get_and_create(term, code, country, base_dir):
 if __name__ == "__main__":
     base_dir = r'C:\Users\Eric\Documents\___Portfolio\cornershop'
     # Read the base directory from environment variables
-    term = 'sabonete'  # replace with your term
+    #term = 'sabonete'  # replace with your term
     code = 88010560  # replace with your code
     country = 'BR'  # replace with your country
-    get_and_create(term, code, country, base_dir)
+    
+    from src.listas import supermercado
+
+    for categoria in supermercado:
+        for item in categoria:
+            fruta_data = get_and_create(item, code, country, base_dir)
+

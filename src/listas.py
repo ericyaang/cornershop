@@ -501,8 +501,70 @@ limpeza = [
     'Limpador de Cozinha',
 ]
 
+# Verduras
+verduras = [
+    "Alface",
+    "Couve",
+    "Espinafre",
+    "Agrião",
+    "Rúcula",
+    "Chicória",
+    "Endívia",
+    "Almeirão",
+    "Couve-de-bruxelas",
+    "Couve-flor",
+    "Brócolis",
+    "Acelga",
+    "Repolho",
+    "Cenoura",
+    "Beterraba",
+    "Rabanete",
+    "Nabo",
+    "Pepino",
+    "Tomate",
+    "Pimentão",
+    "Abobrinha",
+    "Berinjela",
+    "Quiabo",
+    "Chuchu",
+    "Jiló",
+    "Abóbora",
+    "Vagem",
+    "Ervilha",
+    "Milho verde",
+    "Aspargo",
+    "Aipo",
+    "Alho-poró",
+    "Palmito",
+    "Cogumelo",
+    "Batata",
+    "Batata-doce",
+    "Mandioca",
+    "Inhame",
+    "Cará",
+    "Bardana",
+    "Salsão",
+    "Coentro",
+    "Salsa",
+    "Cebolinha",
+    "Hortelã",
+    "Manjericão",
+    "Alecrim",
+    "Tomilho",
+    "Orégano",
+    "Alho",
+    "Cebola",
+    "Pimenta",
+    "Gengibre",
+    "Cúrcuma",
+    "Mostarda",
+    "Wasabi",
+    "Raiz-forte"
+]
+
+
 # Crie uma lista final contendo todas as categorias
-supermercado = [frutas, carnes, laticinios, cereais, higiene_pessoal, limpeza]
+supermercado = [frutas, verduras, carnes, laticinios, cereais, higiene_pessoal, limpeza]
 
 # Verifique o número total de produtos
 numero_produtos = sum(len(categoria) for categoria in supermercado)
