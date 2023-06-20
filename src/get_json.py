@@ -2,12 +2,16 @@ import requests
 import logging
 from datetime import datetime
 from typing import Any, Dict, List
+from time import sleep
 import json
 import os
 
+
 class APIError(Exception):
     """Custom exception for API errors."""
+
     pass
+
 
 def get_product_data(query: str, cep: int, country: str) -> dict:
     """
@@ -38,6 +42,7 @@ def get_product_data(query: str, cep: int, country: str) -> dict:
     params = {"query": query, "locality": cep, "country": country}
 
     try:
+        sleep(2)  # Resonable interval betwween requests
         response = requests.get(URL, params=params, headers=HEADERS)
         response.raise_for_status()
     except (requests.exceptions.HTTPError, requests.exceptions.RequestException) as err:
@@ -48,9 +53,10 @@ def get_product_data(query: str, cep: int, country: str) -> dict:
         return response.json()
     except ValueError:
         raise APIError("Received an invalid JSON response.")
-    
+
 
 ##--- helper functions for create_data --- ##
+
 
 def get_nested(data: Dict, *args: str) -> Any:
     """
@@ -62,35 +68,41 @@ def get_nested(data: Dict, *args: str) -> Any:
         data = data.get(arg)
     return data
 
+
 def create_row(data: Dict, aisle: Dict, product: Dict) -> Dict:
     """
     Create a dictionary for a single row in the dataframe.
     """
     return {
-        'date': datetime.today().strftime("%d-%m-%Y"),
-        'aisle_name': aisle.get('aisle_name', None),           
-        'product_name': product.get('name', None),
-        'brand': get_nested(product, 'brand', 'name'),                  
-        'price': get_nested(product, 'pricing', 'price', 'amount'),  
-        'package': product.get('package', None), 
-        'store_name': get_nested(data, 'store', 'name'),    
-        'store_city': get_nested(data, 'store', 'closest_branch', 'city'),
-        'search_term': get_nested(data, 'search_result', 'search_term'),
+        "date": datetime.today().strftime("%d-%m-%Y"),
+        "aisle_name": aisle.get("aisle_name", None),
+        "product_name": product.get("name", None),
+        "brand": get_nested(product, "brand", "name"),
+        "price": get_nested(product, "pricing", "price", "amount"),
+        "package": product.get("package", None),
+        "store_name": get_nested(data, "store", "name"),
+        "store_city": get_nested(data, "store", "closest_branch", "city"),
+        "search_term": get_nested(data, "search_result", "search_term"),
     }
+
 
 def create_data(results: List[Dict]):
     """
     Create a ready dataframe format from the given results.
     """
-    rows = [create_row(data, aisle, product) 
-            for data in results 
-            for aisle in get_nested(data, 'search_result', 'aisles') 
-            for product in aisle.get('products', [])]
+    rows = [
+        create_row(data, aisle, product)
+        for data in results
+        for aisle in get_nested(data, "search_result", "aisles")
+        for product in aisle.get("products", [])
+    ]
     return rows
 
+
 def save_as_json(data, save_path):
-    with open(save_path, 'w') as file:
+    with open(save_path, "w") as file:
         json.dump(data, file)
+
 
 def get_and_create(term, code, country, base_dir):
     """
@@ -117,9 +129,9 @@ def get_and_create(term, code, country, base_dir):
     json_data = raw_json_data.get("results", [])
     data = create_data(json_data)
 
-    data_dir = os.path.join(base_dir, 'data')
+    data_dir = os.path.join(base_dir, "data")
     os.makedirs(data_dir, exist_ok=True)
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"{term}_{code}_{timestamp}"
     save_path = os.path.join(data_dir, f"{filename}.json")
     print(f"Saving data as JSON: {save_path}")
@@ -127,16 +139,14 @@ def get_and_create(term, code, country, base_dir):
     print("Data saved successfully.")
     return data
 
+
 if __name__ == "__main__":
-    base_dir = r'C:\Users\Eric\Documents\___Portfolio\cornershop'
-    # Read the base directory from environment variables
-    #term = 'sabonete'  # replace with your term
-    code = 88010560  # replace with your code
-    country = 'BR'  # replace with your country
+    from listas import supermercado
     
-    from src.listas import supermercado
+    base_dir = os.getenv("CS_DIRECTORY")
+    code = os.getenv("CS_CODE")
+    country = os.getenv("CS_COUNTRY")
 
     for categoria in supermercado:
         for item in categoria:
             fruta_data = get_and_create(item, code, country, base_dir)
-

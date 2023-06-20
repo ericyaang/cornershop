@@ -1,0 +1,17 @@
+version: '3.8'
+
+name: cornershop_scrapper
+
+services:
+  scrapper:
+    container_name: cornershop-container
+    image: cornershop-image
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - ./data:/cornershop/data
+
+volumes:
+  data:
